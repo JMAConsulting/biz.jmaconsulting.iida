@@ -103,11 +103,17 @@ function showbalancedue_civicrm_caseTypes(&$caseTypes) {
 
 function showbalancedue_civicrm_searchColumns($contextName, &$columnHeaders, &$rows, $form) {
   if ($contextName == 'contribution') {
-    $columnHeaders['hookHeaders'] = array(
-      'balance_due' => array(
-        'name' => ts('Balance Due'),
-      ),
-    );
+    foreach ($columnHeaders as $index => $column) {
+      if ($column['field_name'] == 'total_amount') {
+        $weight = $column['weight']+1;
+        $columnHeaders[$weight] = array(
+          'name' => ts('Balance Due'),
+          'field_name' => 'balance_due',
+          'weight' => $weight,
+        );
+        break;
+      }
+    }
 
     foreach ($rows as $key => $row) {
       $balanceDue = CRM_Core_BAO_FinancialTrxn::getPartialPaymentWithType(
