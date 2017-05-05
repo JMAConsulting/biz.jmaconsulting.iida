@@ -127,6 +127,19 @@ function showbalancedue_civicrm_searchColumns($contextName, &$columnHeaders, &$r
   }
 }
 
+function showbalancedue_civicrm_buildForm($formName, &$form) {
+  if (($formName == 'CRM_Contribute_Form_Contribution')) {
+    // Assumes templates are in a templates folder relative to this file
+    $templatePath = realpath(dirname(__FILE__)."/templates");
+    // Add the field element in the form
+    $form->add('text', 'testfield', ts('Test field'));
+    // dynamically insert a template block in the page
+    CRM_Core_Region::instance('page-header')->add(array(
+      'template' => "{$templatePath}/testfield.tpl"
+     ));
+  }
+}
+
 /**
  * Implements hook_civicrm_angularModules().
  *
