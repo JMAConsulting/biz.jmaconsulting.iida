@@ -104,39 +104,26 @@ function showbalancedue_civicrm_caseTypes(&$caseTypes) {
 function showbalancedue_civicrm_searchColumns($contextName, &$columnHeaders, &$rows, $form) {
   if ($contextName == 'contribution') {
     foreach ($columnHeaders as $index => $column) {
-      if ($column['field_name'] == 'total_amount') {
+      if (!empty($column['field_name']) && $column['field_name'] == 'total_amount') {
         $weight = $column['weight']+1;
         $columnHeaders[$weight] = array(
           'name' => ts('Balance Due'),
           'field_name' => 'balance_due',
           'weight' => $weight,
         );
+
+        foreach ($rows as $key => $row) {
+          $balanceDue = CRM_Core_BAO_FinancialTrxn::getPartialPaymentWithType(
+            $row['contribution_id'],
+            'contribution',
+            FALSE,
+            $row['total_amount']
+          );
+          $rows[$key]['balance_due'] = sprintf("<b>%s</b>", CRM_Utils_Money::format($balanceDue));
+        }
         break;
       }
     }
-
-    foreach ($rows as $key => $row) {
-      $balanceDue = CRM_Core_BAO_FinancialTrxn::getPartialPaymentWithType(
-        $row['contribution_id'],
-        'contribution',
-        FALSE,
-        $row['total_amount']
-      );
-      $rows[$key]['balance_due'] = sprintf("<b>%s</b>", CRM_Utils_Money::format($balanceDue));
-    }
-  }
-}
-
-function showbalancedue_civicrm_buildForm($formName, &$form) {
-  if (($formName == 'CRM_Contribute_Form_Contribution')) {
-    // Assumes templates are in a templates folder relative to this file
-    $templatePath = realpath(dirname(__FILE__)."/templates");
-    // Add the field element in the form
-    $form->add('text', 'testfield', ts('Test field'));
-    // dynamically insert a template block in the page
-    CRM_Core_Region::instance('page-header')->add(array(
-      'template' => "{$templatePath}/testfield.tpl"
-     ));
   }
 }
 
