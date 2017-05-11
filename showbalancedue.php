@@ -105,8 +105,8 @@ function showbalancedue_civicrm_searchColumns($contextName, &$columnHeaders, &$r
   if ($contextName == 'contribution') {
     foreach ($columnHeaders as $index => $column) {
       if (!empty($column['field_name']) && $column['field_name'] == 'total_amount') {
-        $weight = $column['weight']+1;
-        $columnHeaders[$weight] = array(
+        $weight = $column['weight'] + 4;
+        $columnHeaders[] = array(
           'name' => ts('Balance Due'),
           'field_name' => 'balance_due',
           'weight' => $weight,
