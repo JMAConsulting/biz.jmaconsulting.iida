@@ -102,12 +102,7 @@ function showbalancedue_civicrm_searchColumns($contextName, &$columnHeaders, &$r
         );
 
         foreach ($rows as $key => $row) {
-          $balanceDue = CRM_Core_BAO_FinancialTrxn::getPartialPaymentWithType(
-            $row['contribution_id'],
-            'contribution',
-            FALSE,
-            $row['total_amount']
-          );
+          $balanceDue = CRM_Contribute_BAO_Contribution::getContributionBalance($row['contribution_id'], $row['total_amount']);
           $rows[$key]['balance_due'] = sprintf("<b>%s</b>", CRM_Utils_Money::format($balanceDue));
         }
         break;
